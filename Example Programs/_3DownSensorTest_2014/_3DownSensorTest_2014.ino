@@ -1,8 +1,9 @@
-/*
+//This example code is in the public domain.
 
-  This example code is in the public domain.
- */
+//If it doesn't work, take off the front sensor.
+//If that sensor sees you it will mess up the whole thing.
  
+
  #include "DigiKeyboard.h" 
  
 
