@@ -4,13 +4,17 @@ just use the number 0, instead.
 */
 
 
-/* Not working right. DigiKeyboard does not consistently work.
+/* Not working right. DigiKeyboard does not work at the same time as the red LED on the board.
 */
  //#include "DigiKeyboard.h"
  
 const int led = 3;
 const int motor1 = 0;      // motor1 connected to analog pin 7
 const int motor2 = 1;      // motor1 connected to analog pin 8
+
+int motor1basespeed = 135;
+int motor2basespeed = 135;
+
 int normmotor1speed = 135;
 int normmotor2speed = 135;
 long VCCmV = 3500;
@@ -30,11 +34,13 @@ void loop()  {
     VCCmV = ((VCCmV*99)/100); 
     VCCmV = (VCCmV + (readVcc()/100));
     
+    normmotor1speed =int(((long(motor1basespeed))*long(1330))/(VCCmV-2025));    
+    normmotor2speed =int(((long(motor2basespeed))*long(1330))/(VCCmV-2025));     
+    
     analogWrite(motor1, normmotor1speed); 
     analogWrite(motor2, normmotor2speed);   
+   
     
-    
-  
     digitalWrite(led, HIGH);
 
   delay(2000);
