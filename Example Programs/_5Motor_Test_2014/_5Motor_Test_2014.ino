@@ -8,8 +8,8 @@
  */
 
 // Declarations; defines the variables and initial states
-const byte motor1 = 0;      // motor1 connected to analog pin 0
-const byte motor2 = 1;      // motor1 connected to analog pin 1
+const int motor1 = 0;      // motor1 connected to analog pin 0
+const int motor2 = 1;      // motor1 connected to analog pin 1
 int counter = 0;
 
 // Setup: Runs only once and defines the pins to be used
