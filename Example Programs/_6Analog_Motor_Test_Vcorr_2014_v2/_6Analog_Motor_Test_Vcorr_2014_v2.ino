@@ -4,7 +4,7 @@ just use the number 0, instead.
 */
 
 
-/* Not working right. DigiKeyboard does not work.
+/* Not working right. DigiKeyboard does not consistently work.
 */
  //#include "DigiKeyboard.h"
  
