@@ -16,11 +16,12 @@ const int led = 3;
 const int motor1 = 0;      // motor1 connected to analog pin 7
 const int motor2 = 1;      // motor1 connected to analog pin 8
 
-int motor1basespeed = 135;
-int motor2basespeed = 135;
+int motor1basespeed = 175; // these numbers will need to be tweaked
+int motor2basespeed = 175; // for your specific heli - the default
+ // value is 135 for both.
 
-int normmotor1speed = 135;
-int normmotor2speed = 135;
+int normmotor1speed;
+int normmotor2speed;
 long VCCmV = 3500;
 
 
@@ -35,7 +36,7 @@ void setup()  {
 
 void loop()  { 
   
-  for(int counter = 0; counter < 1500; counter++)
+  for(int counter = 0; counter < 1000; counter++)
   {
     VCCmV = ((VCCmV*95)/100); 
     VCCmV = (VCCmV + (readVcc()/100)*5);
