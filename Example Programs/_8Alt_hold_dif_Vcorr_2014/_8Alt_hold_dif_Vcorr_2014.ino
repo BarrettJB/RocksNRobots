@@ -3,75 +3,92 @@
   This example code is in the public domain.
   Display the altitude in cm.
   
-  pin 3 led cant be set as output if you are using DigiKeyboard
+  Digikeyboard cannot be used if you are using the pin 3 LED.
  */
  
- //#include "DigiKeyboard.h" 
  
 
-int down_sensor_val = 0;
+int down_sensor_val = 0; // Variable to keep track of the down facing sensor
 int altimeter_val = 0;
 int AltErr = -0;
 int AltGoal = 80;
-int LastAlt = 80;
+int LastAlt = 90; // The goal altitude, in centimeters. You can mess with this.
 int counter = 0;
 long VCCmV = 3500;
+const int led = 3;
 const int motor1 = 0;      // motor1 connected to analog pin 7
 const int motor2 = 1;      // motor1 connected to analog pin 8
-int motor1basespeed = 135;
-int motor2basespeed = 135;
+int motor1basespeed = 179; // these numbers will need to be tweaked for your
+int motor2basespeed = 179; // specific heli - the default value is 135 for both.
+int normmotor1speed;
+int normmotor2speed;
 
-int normmotor1speed = 135;
-int normmotor2speed = 135;
+/*Take note that motor1 is the bottom rotor, and motor2 is the upper rotor.
+  having the upper rotor (motor2) moving faster than the other will cause
+  the helo to spin counterclockwise. Likewise, having the bottom rotor, 
+  operated by motor1 moving faster, will make the heli spin clockwise.
 
 
-// the setup routine runs once when you press reset:
-void setup() {                
+// the setup routine runs once when you press reset: */
+void setup() 
+{                
   // initialize the outputs.
-  //pinMode(3,OUTPUT);
-  //pinMode(4, INPUT);
-  //pinMode(5, INPUT);  
+  pinMode(4, INPUT);
+  pinMode(5, INPUT);  
+  pinMode(led, OUTPUT);      // sets the pin as output
+  pinMode(motor1, OUTPUT);   // sets the pin as output
+  pinMode(motor2, OUTPUT);   // sets the pin as output 
 }
 
 // the loop routine runs over and over again forever:
-void loop() {
-  //int down_sensor_val = analogRead(1);
-  //DigiKeyboard.println(down_sensor_val);
-  
-  int altimeter_val = 23000/(55 +analogRead(1));
-  //DigiKeyboard.println(altimeter_val);
-  
-
- 
+void loop() 
+{
+  for(int counter = 0; counter < 1000; counter++)
+  {
+     VCCmV = ((VCCmV*95)/100); 
+     VCCmV = (VCCmV + (readVcc()/100)*5);
+     
+     int altimeter_val = 23000/(55 +analogRead(1));
+     
      AltErr = (1*(AltGoal - altimeter_val) + 10*(LastAlt - altimeter_val));
     
-       if (AltErr > 80){       
-           AltErr = 80;}
-       if (AltErr < -50){       
-           AltErr = -50;}    
+     if (AltErr > 80){AltErr = 80;}
+     if (AltErr < -50){AltErr = -50;}    
            
-    LastAlt = altimeter_val;       
+     LastAlt = altimeter_val;       
            
-   counter = counter +1;      
- 
-   normmotor1speed =int(((long(motor1basespeed))*long(1330))/(VCCmV-2025));    
-   normmotor2speed =int(((long(motor2basespeed))*long(1330))/(VCCmV-2025)); 
+     counter = counter +1;      
    
-    if (counter > 4000){
-      analogWrite(motor1, 0); 
-      analogWrite(motor2, 0);   
-       delay(10000); }
-    else {        
-      analogWrite(motor1, normmotor1speed + (120*AltErr/100)); 
-      analogWrite(motor2, normmotor2speed + (120*AltErr/100));    
-    }  
-  delay(10);
-     
-    //DigiKeyboard.println(AltErr);   
-    //DigiKeyboard.println(125 + (125*AltErr/100));      
+     if (counter > 4000)
+     {
+       analogWrite(motor1, 0); 
+       analogWrite(motor2, 0);   
+       delay(10000); 
+     }
+     else 
+     {     
+       normmotor1speed =int(((long(motor1basespeed))*long(1330))/(VCCmV-2025));    
+       normmotor2speed =int(((long(motor2basespeed))*long(1330))/(VCCmV-2025)); 
+      
+       analogWrite(motor1, normmotor1speed + (120*AltErr/100)); 
+       analogWrite(motor2, normmotor2speed + (120*AltErr/100));    
+      }  
+    delay(10);
+  }  
+  for(int counter = normmotor1speed; counter <= 1; counter = counter -1)
+  {
+    analogWrite(motor1, counter);  // gradually slows motors, keeping heli from plummeting,
+    analogWrite(motor2, counter);  // which you just hate to see it do every time
+    delay(15);
+  }
+  analogWrite(motor1, 0);  // shuts off motors
+  analogWrite(motor2, 0);  
+  
+  delay(10000);  // waits for 10 seconds before starting again
 }
 
-long readVcc() {
+long readVcc() 
+{
   // Source: http://provideyourown.com/2012/secret-arduino-voltmeter-measure-battery-voltage/
   // Read 1.1V reference against AVcc
   // set the reference to Vcc and the measurement to the internal 1.1V reference
