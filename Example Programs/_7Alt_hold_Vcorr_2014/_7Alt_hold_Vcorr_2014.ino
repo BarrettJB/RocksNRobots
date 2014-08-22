@@ -70,9 +70,16 @@ void loop()
      }  
      delay(10);
   }
-  analogWrite(motor1, 0); // after the time has expired, shut off the motors,
-  analogWrite(motor2, 0); // and pause 10 seconds before starting again
-  delay(10000);
+  for(int counter = normmotor1speed; counter <= 1; counter = counter -1)
+  {
+    analogWrite(motor1, counter);  // gradually slows motors, keeping heli from plummeting,
+    analogWrite(motor2, counter);  // which you just hate to see it do every time
+    delay(4);
+  }
+  analogWrite(motor1, 0);  // shuts off motors
+  analogWrite(motor2, 0);  
+  
+  delay(10000);  // waits for 10 seconds before starting again
 }
 
 long readVcc() {
