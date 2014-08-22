@@ -74,7 +74,7 @@ void loop()
   {
     analogWrite(motor1, counter);  // gradually slows motors, keeping heli from plummeting,
     analogWrite(motor2, counter);  // which you just hate to see it do every time
-    delay(4);
+    delay(15);
   }
   analogWrite(motor1, 0);  // shuts off motors
   analogWrite(motor2, 0);  
