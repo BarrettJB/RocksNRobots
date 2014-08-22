@@ -10,15 +10,15 @@ just use the number 0, instead.
  
  /*take note that motor1 is the bottom rotor, and motor2 is the upper rotor.
    having the upper rotor (motor2) moving faster than the other will cause the heli
-   to spin counterclockwise. */
+   to spin counterclockwise. Likewise, having the bottom rotor, operated by motor1
+   moving faster, will make the heli spin clockwise.*/
  
 const int led = 3;
 const int motor1 = 0;      // motor1 connected to analog pin 7
 const int motor2 = 1;      // motor1 connected to analog pin 8
 
-int motor1basespeed = 175; // these numbers will need to be tweaked
-int motor2basespeed = 175; // for your specific heli - the default
- // value is 135 for both.
+int motor1basespeed = 175; // these numbers will need to be tweaked for your
+int motor2basespeed = 175; // specific heli - the default value is 135 for both.
 
 int normmotor1speed;
 int normmotor2speed;
