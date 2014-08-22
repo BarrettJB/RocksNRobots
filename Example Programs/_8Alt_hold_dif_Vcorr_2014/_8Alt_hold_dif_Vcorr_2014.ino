@@ -11,8 +11,8 @@
 int down_sensor_val = 0; // Variable to keep track of the down facing sensor
 int altimeter_val = 0;
 int AltErr = -0;
-int AltGoal = 80;
-int LastAlt = 90; // The goal altitude, in centimeters. You can mess with this.
+int AltGoal = 90;
+int LastAlt = 80; // The goal altitude, in centimeters. You can mess with this.
 int counter = 0;
 long VCCmV = 3500;
 const int led = 3;
@@ -43,7 +43,7 @@ void setup()
 // the loop routine runs over and over again forever:
 void loop() 
 {
-  for(int counter = 0; counter < 1000; counter++)
+  for(int counter = 0; counter < 1500; counter++)
   {
      VCCmV = ((VCCmV*95)/100); 
      VCCmV = (VCCmV + (readVcc()/100)*5);
