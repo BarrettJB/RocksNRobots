@@ -8,6 +8,10 @@ just use the number 0, instead.
 */
  //#include "DigiKeyboard.h"
  
+ /*take note that motor1 is the bottom rotor, and motor2 is the upper rotor.
+   having the upper rotor (motor2) moving faster than the other will cause the heli
+   to spin counterclockwise. */
+ 
 const int led = 3;
 const int motor1 = 0;      // motor1 connected to analog pin 7
 const int motor2 = 1;      // motor1 connected to analog pin 8
@@ -43,7 +47,7 @@ void loop()  {
     
     digitalWrite(led, HIGH);
 
-  delay(2000);
+  delay(5000);
   analogWrite(motor1, 0); 
   analogWrite(motor2, 0);
   digitalWrite(led, LOW);
