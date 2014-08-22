@@ -3,61 +3,76 @@
   This example code is in the public domain.
   Display the altitude in cm.
   
-  pin 3 led cant be set as output if you are using DigiKeyboard
+  Digikeyboard cannot be used if you are using the pin 3 LED.
  */
  
- //#include "DigiKeyboard.h" 
- 
 
-int down_sensor_val = 0;
+int down_sensor_val = 0; // Variable to keep track of the down facing sensor
 int altimeter_val = 0;
 int AltErr = -0;
-int AltGoal = 80;
+int AltGoal = 80;  // The goal altitude, in centimeters. You can mess with this.
 int counter = 0;
+const int led = 3;
 const int motor1 = 0;      // motor1 connected to analog pin 7
 const int motor2 = 1;      // motor1 connected to analog pin 8
 long VCCmV = 3500;
+int normmotor1speed;
+int normmotor2speed;
+int motor1basespeed = 179; // these numbers will need to be tweaked for your
+int motor2basespeed = 178; // specific heli - the default value is 135 for both.
+
+/*Take note that motor1 is the bottom rotor, and motor2 is the upper rotor.
+  having the upper rotor (motor2) moving faster than the other will cause
+  the helo to spin counterclockwise. Likewise, having the bottom rotor, 
+  operated by motor1 moving faster, will make the heli spin clockwise.*/
 
 // the setup routine runs once when you press reset:
-void setup() {                
+void setup() 
+{                
   // initialize the outputs.
-  //pinMode(3,OUTPUT);
-  //pinMode(4, INPUT);
-  //pinMode(5, INPUT);  
+  pinMode(4, INPUT);
+  pinMode(5, INPUT);  
+  pinMode(led, OUTPUT);      // sets the pin as output
+  pinMode(motor1, OUTPUT);   // sets the pin as output
+  pinMode(motor2, OUTPUT);   // sets the pin as output
 }
 
 // the loop routine runs over and over again forever:
-void loop() {
-  
-   VCCmV = ((VCCmV*99)/100); 
-   VCCmV = (VCCmV + (readVcc()/100));
-    
-  //int down_sensor_val = analogRead(1);
-  //DigiKeyboard.println(down_sensor_val);
-  int altimeter_val = 23000/(55 +analogRead(1));
-  //DigiKeyboard.println(altimeter_val);
-  
+void loop() 
+{
+  for(int counter = 0; counter < 1000; counter++)
+  {
+     VCCmV = ((VCCmV*95)/100); 
+     VCCmV = (VCCmV + (readVcc()/100)*5);
  
-     AltErr = (AltGoal - altimeter_val)*3;
+     int altimeter_val = 23000/(55 +analogRead(1));
+  
+     AltErr = (AltGoal - altimeter_val)*2;
     
-       if (AltErr > 30){       
-           AltErr = 30;}
-       if (AltErr < -20){       
-           AltErr = -20;}    
+     if (AltErr > 30) {AltErr = 30;}
+     if (AltErr < -20){AltErr = -20;}    
            
-   counter = counter +1;      
+     counter = counter +1;      
    
-    if (counter > 4000){
-      analogWrite(motor1, 0); 
-      analogWrite(motor2, 0);   
-       delay(10000); }
-    else {        
-      analogWrite(motor1, 135 + AltErr); 
-      analogWrite(motor2, 135 + AltErr);    
-    }  
-  delay(10);
-     
-    //DigiKeyboard.println(AltErr);      
+     if (counter > 4000)
+     {
+       analogWrite(motor1, 0); 
+       analogWrite(motor2, 0);   
+       delay(10000); 
+     }
+     else 
+     { 
+       normmotor1speed =int(((long(motor1basespeed))*long(1330))/(VCCmV-2025));    
+       normmotor2speed =int(((long(motor2basespeed))*long(1330))/(VCCmV-2025));     
+      
+       analogWrite(motor1, normmotor1speed + AltErr); 
+       analogWrite(motor2, normmotor2speed + AltErr);  
+     }  
+     delay(10);
+  }
+  analogWrite(motor1, 0); // after the time has expired, shut off the motors,
+  analogWrite(motor2, 0); // and pause 10 seconds before starting again
+  delay(10000);
 }
 
 long readVcc() {
