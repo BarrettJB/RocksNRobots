@@ -35,6 +35,8 @@ void setup()  {
 
 void loop()  { 
   
+  for(int counter = 0; counter < 4000; counter++)
+  {
     VCCmV = ((VCCmV*99)/100); 
     VCCmV = (VCCmV + (readVcc()/100));
     
@@ -47,7 +49,8 @@ void loop()  {
     
     digitalWrite(led, HIGH);
 
-  delay(5000);
+    delay(1);
+  }
   analogWrite(motor1, 0); 
   analogWrite(motor2, 0);
   digitalWrite(led, LOW);
