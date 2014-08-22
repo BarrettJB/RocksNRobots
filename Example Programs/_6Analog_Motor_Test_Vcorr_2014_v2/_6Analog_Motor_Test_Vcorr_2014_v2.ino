@@ -16,8 +16,8 @@ const int led = 3;
 const int motor1 = 0;      // motor1 connected to analog pin 7
 const int motor2 = 1;      // motor1 connected to analog pin 8
 
-int motor1basespeed = 140;
-int motor2basespeed = 150;
+int motor1basespeed = 135;
+int motor2basespeed = 135;
 
 int normmotor1speed = 135;
 int normmotor2speed = 135;
@@ -37,8 +37,8 @@ void loop()  {
   
   for(int counter = 0; counter < 1500; counter++)
   {
-    VCCmV = ((VCCmV*99)/100); 
-    VCCmV = (VCCmV + (readVcc()/100));
+    VCCmV = ((VCCmV*95)/100); 
+    VCCmV = (VCCmV + (readVcc()/100)*5);
     
     normmotor1speed =int(((long(motor1basespeed))*long(1330))/(VCCmV-2025));    
     normmotor2speed =int(((long(motor2basespeed))*long(1330))/(VCCmV-2025));     
