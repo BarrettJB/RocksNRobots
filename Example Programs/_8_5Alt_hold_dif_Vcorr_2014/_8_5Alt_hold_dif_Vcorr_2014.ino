@@ -1,71 +1,82 @@
-/* You might already have an idea of what a variable 
-is in math. In programming, a variable is a word with 
-just use the number 0, instead.
-*/
+/*
 
+  This example code is in the public domain.
+  Display the altitude in cm.
+  
+  Digikeyboard cannot be used if you are using the pin 3 LED.
+ */
+ 
+ 
 
-/* Not working right. DigiKeyboard does not work at the same time as the red LED on the board.
-*/
- //#include "DigiKeyboard.h"
- 
- /*take note that motor1 is the bottom rotor, and motor2 is the upper rotor.
-   having the upper rotor (motor2) moving faster than the other will cause the heli
-   to spin counterclockwise. Likewise, having the bottom rotor, operated by motor1
-   moving faster, will make the heli spin clockwise.*/
- 
+int down_sensor_val = 0; // Variable to keep track of the down facing sensor
+int altimeter_val = 0;
+int AltErr = -0;
+int AltGoal = 80;
+int LastAlt = 80; // The goal altitude, in centimeters. You can mess with this.
+int counter = 0;
+long VCCmV = 3500;
 const int led = 3;
 const int motor1 = 0;      // motor1 connected to analog pin 7
 const int motor2 = 1;      // motor1 connected to analog pin 8
-
 int motor1basespeed = 210; // these numbers will need to be tweaked for your
 int motor2basespeed = 170; // specific heli - the default value is 135 for both.
-
 int normmotor1speed;
 int normmotor2speed;
-long VCCmV = 3500;
+
+/*Take note that motor1 is the bottom rotor, and motor2 is the upper rotor.
+  having the upper rotor (motor2) moving faster than the other will cause
+  the helo to spin counterclockwise. Likewise, having the bottom rotor, 
+  operated by motor1 moving faster, will make the heli spin clockwise.
 
 
-
-void setup()  { 
-  // initialize the digital pin as an output.
-  pinMode(led, OUTPUT);    // sets the pin as output
+// the setup routine runs once when you press reset: */
+void setup() 
+{                
+  // initialize the outputs.
+  pinMode(4, INPUT);
+  pinMode(5, INPUT);  
+  pinMode(led, OUTPUT);      // sets the pin as output
   pinMode(motor1, OUTPUT);   // sets the pin as output
-  pinMode(motor2, OUTPUT);   // sets the pin as output
+  pinMode(motor2, OUTPUT);   // sets the pin as output 
+}
 
-} 
-
-void loop()  { 
-  
-  for(int counter = 0; counter < 300; counter++)
+// the loop routine runs over and over again forever:
+void loop() 
+{
+  for(int counter = 0; counter < 1000; counter++)
   {
-    VCCmV = ((VCCmV*95)/100); 
-    VCCmV = (VCCmV + (readVcc()/100)*5);
-    
-    normmotor1speed =int(((long(motor1basespeed))*long(1330))/(VCCmV-2025));    
-    normmotor2speed =int(((long(motor2basespeed))*long(1330))/(VCCmV-2025));     
-    
-    analogWrite(motor1, normmotor1speed); 
-    analogWrite(motor2, normmotor2speed);   
-   
-    
-    digitalWrite(led, HIGH);
-
+     VCCmV = ((VCCmV*95)/100); 
+     VCCmV = (VCCmV + (readVcc()/100)*5);
+     
+     int altimeter_val = 23000/(55 +analogRead(1));
+     AltErr = (2*(AltGoal - altimeter_val) + 6*(LastAlt - altimeter_val));
+     if (AltErr > 80){AltErr = 80;}
+     if (AltErr < -50){AltErr = -50;}    
+           
+     LastAlt = altimeter_val;       
+              
+       normmotor1speed =int(((long(motor1basespeed))*long(1330))/(VCCmV-2025));    
+       normmotor2speed =int(((long(motor2basespeed))*long(1330))/(VCCmV-2025)); 
+      
+       analogWrite(motor1, normmotor1speed + (120*AltErr/100)); 
+       analogWrite(motor2, normmotor2speed + (120*AltErr/100));    
+        
     delay(10);
-  }
-  
+  }  
   for(int counter = normmotor1speed; counter <= 180; counter = counter -1)
   {
     analogWrite(motor1, counter);  // gradually slows motors, keeping heli from plummeting,
     analogWrite(motor2, counter);  // which you just hate to see it do every time
-    delay(20);
-  }  
+    delay(10);
+  }
+  analogWrite(motor1, 0);  // shuts off motors
+  analogWrite(motor2, 0);  
   
-  analogWrite(motor1, 0); 
-  analogWrite(motor2, 0);
-  digitalWrite(led, LOW);
-  delay(10000);  
+  delay(10000);  // waits for 10 seconds before starting again
 }
-long readVcc() {
+
+long readVcc() 
+{
   // Source: http://provideyourown.com/2012/secret-arduino-voltmeter-measure-battery-voltage/
   // Read 1.1V reference against AVcc
   // set the reference to Vcc and the measurement to the internal 1.1V reference

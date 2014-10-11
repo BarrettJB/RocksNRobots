@@ -15,8 +15,8 @@ int GYRO_SENSOR_PIN = 0;  // Input signal for gyro value
 int altimeter_val = 0;  //Declare variable: measured altimeter value in code.  Initialized at 0
 int front_sensor_val = 0; //Declare variable: measured front sensor value in code.  Initialized at 0
 int gyro_sensor_val = 0; //Declare variable: measured gyro value in code.  Initialized at 0
-int basespeed = 165;  //#Declare variable: Startup Power setting. Using value from ***Motor Test Experiment
-int helispeed = 135; 
+int basespeed = 210;  //#Declare variable: Startup Power setting. Using value from ***Motor Test Experiment
+int helispeed = 170; 
 int helispeed7 = 135;
 int helispeed8 = 135;
 int normhelispeed7 = 135;
@@ -64,8 +64,8 @@ void loop()  {
   //delay(100);
   
   while(1){
-    VCCmV = ((VCCmV*99)/100); 
-    VCCmV = (VCCmV + (readVcc()/100));
+    VCCmV = ((VCCmV*95)/100); 
+    VCCmV = (VCCmV + (readVcc()/100)*5);
 
     int altimeter_val = 23000/(55 +analogRead(ALTIMETER_PIN));
     int front_sensor_val = 7800/(1+analogRead(FRONT_SENSOR_PIN));
