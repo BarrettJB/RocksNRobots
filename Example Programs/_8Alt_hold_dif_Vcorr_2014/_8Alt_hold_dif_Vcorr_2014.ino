@@ -11,15 +11,15 @@
 int down_sensor_val = 0; // Variable to keep track of the down facing sensor
 int altimeter_val = 0;
 int AltErr = -0;
-int AltGoal = 90;
+int AltGoal = 80;
 int LastAlt = 80; // The goal altitude, in centimeters. You can mess with this.
 int counter = 0;
 long VCCmV = 3500;
 const int led = 3;
 const int motor1 = 0;      // motor1 connected to analog pin 7
 const int motor2 = 1;      // motor1 connected to analog pin 8
-int motor1basespeed = 182; // these numbers will need to be tweaked for your
-int motor2basespeed = 179; // specific heli - the default value is 135 for both.
+int motor1basespeed = 170; // these numbers will need to be tweaked for your
+int motor2basespeed = 145; // specific heli - the default value is 135 for both.
 int normmotor1speed;
 int normmotor2speed;
 
@@ -43,43 +43,31 @@ void setup()
 // the loop routine runs over and over again forever:
 void loop() 
 {
-  for(int counter = 0; counter < 1500; counter++)
+  for(int counter = 0; counter < 1000; counter++)
   {
      VCCmV = ((VCCmV*95)/100); 
      VCCmV = (VCCmV + (readVcc()/100)*5);
      
      int altimeter_val = 23000/(55 +analogRead(1));
-     
-     AltErr = (1*(AltGoal - altimeter_val) + 10*(LastAlt - altimeter_val));
-    
+     AltErr = (2*(AltGoal - altimeter_val) + 6*(LastAlt - altimeter_val));
      if (AltErr > 80){AltErr = 80;}
      if (AltErr < -50){AltErr = -50;}    
            
      LastAlt = altimeter_val;       
-           
-     counter = counter +1;      
-   
-     if (counter > 4000)
-     {
-       analogWrite(motor1, 0); 
-       analogWrite(motor2, 0);   
-       delay(10000); 
-     }
-     else 
-     {     
+              
        normmotor1speed =int(((long(motor1basespeed))*long(1330))/(VCCmV-2025));    
        normmotor2speed =int(((long(motor2basespeed))*long(1330))/(VCCmV-2025)); 
       
        analogWrite(motor1, normmotor1speed + (120*AltErr/100)); 
        analogWrite(motor2, normmotor2speed + (120*AltErr/100));    
-      }  
+        
     delay(10);
   }  
-  for(int counter = normmotor1speed; counter <= 1; counter = counter -1)
+  for(int counter = normmotor1speed; counter <= 180; counter = counter -1)
   {
     analogWrite(motor1, counter);  // gradually slows motors, keeping heli from plummeting,
     analogWrite(motor2, counter);  // which you just hate to see it do every time
-    delay(15);
+    delay(10);
   }
   analogWrite(motor1, 0);  // shuts off motors
   analogWrite(motor2, 0);  
