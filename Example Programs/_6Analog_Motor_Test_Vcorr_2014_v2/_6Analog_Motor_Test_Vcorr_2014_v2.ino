@@ -17,8 +17,8 @@ const int led = 3;
 const int motor1 = 0;      // motor1 connected to analog pin 7
 const int motor2 = 1;      // motor1 connected to analog pin 8
 
-int motor1basespeed = 179; // these numbers will need to be tweaked for your
-int motor2basespeed = 178; // specific heli - the default value is 135 for both.
+int motor1basespeed = 210; // these numbers will need to be tweaked for your
+int motor2basespeed = 170; // specific heli - the default value is 135 for both.
 
 int normmotor1speed;
 int normmotor2speed;
